@@ -1,0 +1,1 @@
+This MODX Extra allow to load user avatar for registered users.
