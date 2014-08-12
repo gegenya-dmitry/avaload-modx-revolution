@@ -1,3 +1,3 @@
-avaLoad 1.0 beta
+avaLoad 1.1 beta
 =============================================================
-First release
++update system parameters

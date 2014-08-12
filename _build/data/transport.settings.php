@@ -17,6 +17,7 @@ $settings['avaload_height']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Высота аватары',
 ),'',true,true);
 
 $settings['avaload_width'] = $modx->newObject('modSystemSetting');
@@ -26,6 +27,7 @@ $settings['avaload_width']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Ширина аватары',
 ),'',true,true);
 
 $settings['avaload_max_filesizes'] = $modx->newObject('modSystemSetting');
@@ -35,6 +37,7 @@ $settings['avaload_max_filesizes']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Максимальный размер исходного файла для загрузки',
 ),'',true,true);
 
 $settings['avaload_output_format'] = $modx->newObject('modSystemSetting');
@@ -44,6 +47,7 @@ $settings['avaload_output_format']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Формат файла аватары',
 ),'',true,true);
 
 $settings['avaload_quality'] = $modx->newObject('modSystemSetting');
@@ -53,6 +57,17 @@ $settings['avaload_quality']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Качество аватары',
+),'',true,true);
+
+$settings['avaload_true_types'] = $modx->newObject('modSystemSetting');
+$settings['avaload_true_types']->fromArray(array(
+    'key' => 'avaload_true_types',
+    'value' => 'jpg,bmp,gif',
+    'xtype' => 'textfield',
+    'namespace' => 'avaload',
+    'area' => '',
+	'desc'=>'Разрешенные типы файлов для загрузки',
 ),'',true,true);
 
 $settings['avaload_zc'] = $modx->newObject('modSystemSetting');
@@ -62,6 +77,7 @@ $settings['avaload_zc']->fromArray(array(
     'xtype' => 'combo-boolean',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Включить зум и кроп аватара',
 ),'',true,true);
 
 $settings['avaload_image_patch'] = $modx->newObject('modSystemSetting');
@@ -71,6 +87,7 @@ $settings['avaload_image_patch']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Путь где будут храниться аватары пользователя',
 ),'',true,true);
 
 $settings['avaload_url_patch'] = $modx->newObject('modSystemSetting');
@@ -80,6 +97,7 @@ $settings['avaload_url_patch']->fromArray(array(
     'xtype' => 'textfield',
     'namespace' => 'avaload',
     'area' => '',
+	'desc'=>'Путь к каталогу с аватарами',
 ),'',true,true);
 
 

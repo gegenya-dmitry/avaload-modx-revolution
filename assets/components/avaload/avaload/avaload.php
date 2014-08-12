@@ -11,7 +11,7 @@ include_once MODX_CORE_PATH . 'model/modx/modx.class.php';
 function getTrueImageTypes($file,$true_types) {
 	if(!$data = getimagesize($file)) return false;
 
-	$extensions = array(1 => 'gif', 2 => 'jpg',
+	$extensions = array(1 => 'gif', 2 => 'jpeg',
 						3 => 'png', 4 => 'swf',
 						5 => 'psd', 6 => 'bmp',
 						7 => 'tiff', 8 => 'tiff',
@@ -23,7 +23,6 @@ function getTrueImageTypes($file,$true_types) {
 	$result = array('width' => $data[0],
 					'height' => $data[1],
 					'extension' => $extensions[$data[2]],
-					'size' => $filesize,
 					'mime' => $data['mime']);
 
 	return in_array($result['extension'], $true_types);
@@ -34,6 +33,17 @@ function avaLoad() {
 	$modx = new Modx();
 	$modx->initialize('web');
 	$modx->lexicon->load('avaload:default');
+    //load defaul parameters
+    $avaload_height         = $modx->getOption('avaload_height',null,120);
+    $avaload_image_patch    = $modx->getOption('avaload_image_patch',null,'{assets_path}avaloadimg/');
+    $avaload_true_types     = $modx->getOption('avaload_true_types',null,'jpg,bmp,png');
+    $avaload_max_filesizes  = $modx->getOption('avaload_max_filesizes',null,2048000);
+    $avaload_output_format  = $modx->getOption('avaload_output_format',null,'jpg');
+    $avaload_quality        = $modx->getOption('avaload_quality',null,75);
+    $avaload_url_patch      = $modx->getOption('avaload_url_patch',null,'/assets/avaloadimg/');
+    $avaload_width          = $modx->getOption('avaload_width',null,120);
+    $avaload_zc             = $modx->getOption('avaload_zc',null,1);
+
 	$return_message =array();
 	if(!$modx->user->isAuthenticated()){
 		$return_message=array(0,'Эта операция запрещена неавторизованным пользователям.','');
@@ -44,7 +54,7 @@ function avaLoad() {
 		  $return_message = array(0,'Файл не был загружен.','');
 		  $modx->log(modX::LOG_LEVEL_ERROR,'[avaload] UserID: '.$modx->user->id.', Неудалось загрузить файл ');
 	  }
-	  elseif (!getTrueImageTypes($_FILES['avaloadImage']['tmp_name'],explode(',',$modx->getOption('avaload_true_types')))) {
+	  elseif (!getTrueImageTypes($_FILES['avaloadImage']['tmp_name'],explode(',',$avaload_true_types))) {
 			$return_message = array(0,'Загрузка файлов такого типа запрещена.','');
 			$modx->log(modX::LOG_LEVEL_ERROR,'[avaload] UserID: '.$modx->user->id.', Попытка загрузить запрещенный файл '.$_FILES['avaloadImage']['name'].'.'.$_FILES['avaloadImage']['type'].' размер:'.$_FILES['avaloadImage']['size']);
 	  }
@@ -53,15 +63,14 @@ function avaLoad() {
 		  $return_message = array(0,'Не загружен класс modPhpThumb','');
 	  }
 	  else {
-		  $avaloadImagePatch = $modx->getOption('avaload_image_patch');
 
-		  $avaOptions = array(
-			  'zc'=> (int) $modx->getOption('avaload_zc',null,1),
-			  'h' => (int) $modx->getOption('avaload_height',null,120),
-			  'w' => (int) $modx->getOption('avaload_width',null,120),
-			  'q' => (int) $modx->getOption('avaload_quality',null,75),
-			  'f' => (string) $modx->getOption('avaload_output_format',null,'jpg'),
-			  'maxb' => (float) $modx->getOption('avaload_max_filesizes',null,2048000),
+        $avaOptions = array(
+			  'zc'=> (int) $avaload_zc,
+			  'h' => (int) $avaload_height,
+			  'w' => (int) $avaload_width,
+			  'q' => (int) $avaload_quality,
+			  'f' => (string) $avaload_output_format,
+			  'maxb' => (float) $avaload_max_filesizes,
 		  );
 
 		  $phpThumb = new modPhpThumb($modx);
@@ -86,7 +95,7 @@ function avaLoad() {
 		  else {
 			  $phpThumb->GenerateThumbnail();
 			  $file_name = $modx->user->id.time().'.'.$avaOptions['f'];
-			  $outputImage = $avaloadImagePatch.$file_name;
+			  $outputImage = $avaload_image_patch.$file_name;
 			  $phpThumb->RenderToFile($outputImage);
 
 			  $profile=$modx->user->getOne('Profile');
@@ -95,7 +104,7 @@ function avaLoad() {
 			  $profile->save();
 			  $errDelAva='';
 			  if ($old_ava!='') 
-				if(!unlink($avaloadImagePatch.$old_ava)) 
+				if(!unlink($avaload_image_patch.$old_ava))
 					$errDelAva =' Старый аватар не был удален';
 
 			  $return_message = array(1,'Аватар загружен.'.$errDelAva,$modx->getOption('avaload_url_patch').$file_name);
